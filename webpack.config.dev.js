@@ -1,7 +1,12 @@
 const webpack = require('webpack');
 
 module.exports = {
-  entry: "./src/index.tsx",
+  mode: "development",
+  entry: [
+    'react-hot-loader/patch',
+    'webpack-hot-middleware/client?reload=false',
+    './src/index'
+  ],
   output: {
     filename: "bundle.js",
     path: __dirname + "/dist"

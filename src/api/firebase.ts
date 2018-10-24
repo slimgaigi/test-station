@@ -1,6 +1,13 @@
-import * as firebase from 'firebase/firebase-browser';
+import * as firebase from 'firebase';
 import {firebaseConfig} from '../config';
+import {string} from "prop-types";
+import {once} from "cluster";
+import {User} from "firebase";
 
+export interface FirebaseUser extends User {
+  email: string,
+  password: string,
+}
 
 class FirebaseApi {
 
@@ -17,19 +24,19 @@ class FirebaseApi {
     });
   }
 
-  static createUserWithEmailAndPassword(user){
+  static createUserWithEmailAndPassword(user: FirebaseUser): Promise<firebase.auth.UserCredential> {
     return firebase.auth().createUserWithEmailAndPassword(user.email, user.password);
   }
 
-  static signInWithEmailAndPassword(user) {
+  static signInWithEmailAndPassword(user: FirebaseUser) {
     return firebase.auth().signInWithEmailAndPassword(user.email, user.password);
   }
 
-  static authSignOut(){
+  static authSignOut() {
     return firebase.auth().signOut();
   }
 
-  static databasePush(path, value) {
+  static databasePush(path: string, value: any) {
     return new Promise((resolve, reject) => {
       firebase
         .database()
@@ -44,7 +51,7 @@ class FirebaseApi {
     });
   }
 
-  static GetValueByKeyOnce(path, key) {
+  static GetValueByKeyOnce(path: string, key: string | number | boolean) {
     return firebase
       .database()
       .ref(path)
@@ -53,7 +60,7 @@ class FirebaseApi {
       .once('value');
   }
 
-  static GetChildAddedByKeyOnce(path, key) {
+  static GetChildAddedByKeyOnce(path: string, key: string) {
     return firebase
       .database()
       .ref(path)
@@ -62,7 +69,7 @@ class FirebaseApi {
       .once('child_added');
   }
 
-  static databaseSet(path, value) {
+  static databaseSet(path: string, value: any) {
 
     return firebase
       .database()

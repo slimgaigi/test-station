@@ -1,11 +1,13 @@
-import toastr from 'toastr';
+import * as toastr from 'toastr';
 
-import firebaseApi from '../api/firebase';
+import firebaseApi, {FirebaseUser} from '../api/firebase';
 import * as types from './actionTypes';
 import {push} from 'react-router-redux';
 
 import {ajaxCallError, beginAjaxCall} from './ajaxStatusActions';
 import {userLoadedSuccess, userCreated, userIsAdminSuccess} from './userActions';
+import {User} from "firebase";
+import {Action, AnyAction, Dispatch} from "redux";
 
 export function authInitializedDone() {
   return {
@@ -13,7 +15,7 @@ export function authInitializedDone() {
   };
 }
 
-export function authLoggedInSuccess(userUID) {
+export function authLoggedInSuccess(userUID: string) {
   return {
     type: types.AUTH_LOGGED_IN_SUCCESS, userUID
   };
@@ -24,8 +26,8 @@ export function authLoggedOutSuccess() {
   return {type: types.AUTH_LOGGED_OUT_SUCCESS};
 }
 
-export function authInitialized(user) {
-  return (dispatch) => {
+export function authInitialized(user: User) {
+  return (dispatch: Dispatch<AnyAction>) => {
     dispatch(authInitializedDone());
     if (user) {
       dispatch(authLoggedIn(user.uid));
@@ -35,8 +37,8 @@ export function authInitialized(user) {
   };
 }
 
-export function authLoggedIn(userUID) {
-  return (dispatch) => {
+export function authLoggedIn(userUID: string): (dispatch: Dispatch<AnyAction>) => void {
+  return (dispatch: Dispatch<AnyAction>) => {
     dispatch(authLoggedInSuccess(userUID));
     dispatch(beginAjaxCall());
     firebaseApi.GetChildAddedByKeyOnce('/users', userUID)
@@ -54,10 +56,10 @@ export function authLoggedIn(userUID) {
   };
 }
 
-export function createUserWithEmailAndPassword(user) {
-  return (dispatch) => {
+export function createUserWithEmailAndPassword(user: FirebaseUser) {
+  return (dispatch: Dispatch) => {
     dispatch(beginAjaxCall());
-    return firebaseApi.createUserWithEmailAndPassword(user).then(user => {
+    return firebaseApi.createUserWithEmailAndPassword(user).then((user: any) => {
       dispatch(userCreated(user));
     }).catch(error => {
       dispatch(ajaxCallError(error));
@@ -91,7 +93,7 @@ export function signOut() {
         () => {
           dispatch(authLoggedOutSuccess());
           if (getState().routesPermissions.requireAuth
-              .filter(route => route === getState().routing.locationBeforeTransitions.pathname).toString()) {
+            .filter(route => route === getState().routing.locationBeforeTransitions.pathname).toString()) {
             dispatch(push('/'));
           }
         })

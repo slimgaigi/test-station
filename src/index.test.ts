@@ -1,4 +1,4 @@
-import expect from 'expect';
+import * as expect from 'expect';
 
 describe('Our first test', () => {
   it('should pass', () => {
