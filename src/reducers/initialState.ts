@@ -1,4 +1,6 @@
-export default {
+import {AppState} from '../model';
+
+export const initialState: AppState =  {
   routesPermissions: {
     requireAuth: [
       '/admin'

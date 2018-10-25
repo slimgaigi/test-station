@@ -10,7 +10,6 @@ export interface FirebaseUser extends User {
 }
 
 class FirebaseApi {
-
   static initAuth() {
     firebase.initializeApp(firebaseConfig);
     return new Promise((resolve, reject) => {
@@ -70,12 +69,10 @@ class FirebaseApi {
   }
 
   static databaseSet(path: string, value: any) {
-
     return firebase
       .database()
       .ref(path)
       .set(value);
-
   }
 }
 

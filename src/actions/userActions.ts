@@ -4,12 +4,11 @@ import * as types from './actionTypes';
 import { authLoggedIn } from './authActions';
 import {ajaxCallError, beginAjaxCall} from './ajaxStatusActions';
 import {User} from "firebase";
-import {AnyAction, Dispatch} from "redux";
 
 function extractUserProperties(firebaseUser: User) {
 
-  const user = {};
-  const userProperties = [
+  const user: any = {};
+  const userProperties: string[] = [
     'displayName',
     'email',
     'emailVerified',
@@ -23,8 +22,8 @@ function extractUserProperties(firebaseUser: User) {
   ];
 
   userProperties.map((prop: string) => {
-    if (prop in firebaseUser) {
-      user[prop] = firebaseUser[prop];
+    if (firebaseUser.hasOwnProperty(prop)) {
+      user[prop] = (firebaseUser as any)[prop];
     }
   });
 
@@ -32,7 +31,7 @@ function extractUserProperties(firebaseUser: User) {
 }
 
 export function userCreated(user: User) {
-  return (dispatch: Dispatch<AnyAction>) => {
+  return (dispatch: any) => {
     firebaseApi.databaseSet('/users/' + user.uid, extractUserProperties(user))
       .then(
         () => {
@@ -41,7 +40,7 @@ export function userCreated(user: User) {
         })
       .catch(
         error => {
-          dispatch(ajaxCallError(error));
+          dispatch(ajaxCallError());
           // @TODO better error handling
           throw(error);
         });
@@ -54,7 +53,7 @@ export function userCreatedSuccess() {
   };
 }
 
-export function userLoadedSuccess(user) {
+export function userLoadedSuccess(user: User) {
   return {
     type: types.USER_LOADED_SUCCESS, user: extractUserProperties(user)
   };

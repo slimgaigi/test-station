@@ -1,10 +1,11 @@
+import {User} from 'firebase';
+
 // modules
 import {AppContainer} from 'react-hot-loader';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import {Provider} from 'react-redux';
-import {syncHistoryWithStore} from 'react-router-redux';
-import {browserHistory} from 'react-router';
+import { createBrowserHistory } from 'history';
 
 // api
 import FirebaseApi from './api/firebase';
@@ -17,26 +18,29 @@ import {ajaxCallError, beginAjaxCall} from './actions/ajaxStatusActions';
 import App from './components/App';
 
 // Store
-import initialState from './reducers/initialState';
-import configureStore from './store/configureStore'; //eslint-disable-line import/default
+import {initialState} from './reducers/initialState';
+import {storeConfig} from './store/configureStore';
 
 // styles
-import './styles/styles.css'; //Webpack can import CSS files too!
+import './styles/styles.css';
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import '../node_modules/toastr/build/toastr.min.css';
 
+// Hot Module Replacement API
+declare let module: { hot: any };
+
 // store initialization
-const store = configureStore(initialState);
+const store = storeConfig(initialState);
 
 // Create an enhanced history that syncs navigation events with the store
-const history = syncHistoryWithStore(browserHistory, store);
+const history = createBrowserHistory();
 const rootEl = document.getElementById('root');
 
 // Initialize Firebase Auth and then start the app
 store.dispatch(beginAjaxCall());
 FirebaseApi.initAuth()
   .then(
-    user => {
+    (user: User) => {
       store.dispatch(authInitialized(user));
 
       ReactDOM.render(

@@ -1,11 +1,10 @@
-import {createStore, applyMiddleware} from 'redux';
+import {createStore, DeepPartial} from 'redux';
+import {AppState} from '../model';
 import rootReducer from '../reducers';
-import thunk from 'redux-thunk';
 
-export default function configureStore(initialState) {
+export default function configureStore(initialState: DeepPartial<AppState>) {
   return createStore(
     rootReducer,
     initialState,
-    applyMiddleware(thunk)
   );
 }

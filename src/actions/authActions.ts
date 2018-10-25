@@ -1,13 +1,13 @@
+import {User} from 'firebase';
+import {push} from 'react-router-redux';
+import {AnyAction, Dispatch} from 'redux';
 import * as toastr from 'toastr';
 
 import firebaseApi, {FirebaseUser} from '../api/firebase';
 import * as types from './actionTypes';
-import {push} from 'react-router-redux';
 
 import {ajaxCallError, beginAjaxCall} from './ajaxStatusActions';
-import {userLoadedSuccess, userCreated, userIsAdminSuccess} from './userActions';
-import {User} from "firebase";
-import {Action, AnyAction, Dispatch} from "redux";
+import {userCreated, userIsAdminSuccess, userLoadedSuccess} from './userActions';
 
 export function authInitializedDone() {
   return {
@@ -116,7 +116,7 @@ function redirect(replace, pathname, nextPathName, error = false) {
   }
 }
 
-export function requireAuth(nextState, replace) {
+export function requireAuth(nextState: { location: { pathname: any; }; }, replace) {
   return (dispatch, getState) => {
     if (!getState().auth.isLogged) {
       redirect(replace, '/login', nextState.location.pathname, 'You need to be logged to access this page');
@@ -125,8 +125,8 @@ export function requireAuth(nextState, replace) {
 }
 
 
-export function requireAdmin(nextState, replace, callback) {
-  return (dispatch, getState) => {
+export function requireAdmin(nextState: any, replace: any, callback: any) {
+  return (dispatch: any, getState: any) => {
     if (getState().auth.isLogged) {
       switch (getState().user.isAdmin) {
         case false:

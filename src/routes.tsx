@@ -1,5 +1,7 @@
 import React from 'react';
 import {Route, IndexRoute} from 'react-router';
+import {Store} from 'redux';
+import {StateObservable} from 'redux-observable';
 import Layout from './components/Layout';
 import HomePage from './components/home/HomePage';
 import AdminPage from './components/admin/AdminPage';
@@ -10,16 +12,14 @@ import RegistrationPage from './components/registration/RegistrationPage'; //esl
 import {requireAdmin} from './actions/authActions';
 
 
-export default function Routes(store) {
-
-
+export default function Routes(store: Store) {
   const checkAdmin = (nextState, replace, callback) => {
     store.dispatch(requireAdmin(nextState, replace, callback));
   };
 
   return (
     <Route path="/" component={Layout}>
-      <IndexRoute component={HomePage}/>
+      <Route exact path="/" component={HomePage} />
       <Route path="layout" component={Layout}/>
       <Route path="about" component={AboutPage}/>
       <Route path="protected" component={ProtectedPage}/>
